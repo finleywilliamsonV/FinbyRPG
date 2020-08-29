@@ -1,6 +1,6 @@
 const logger = require('winston')
 const Discord = require('discord.io')
-const auth = require('./auth.json')
+const auth = require('../auth.json')
 
 
 import { Player } from './Player'
