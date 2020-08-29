@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
-        "module": "CommonJS",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        // "outFile": "./deployable/build.js",
+        "outDir": "./dist/",
         "sourceMap": true,
-        "target": "ESNext"        
+        "noImplicitAny": true,
+        "module": "es6",
+        "target": "es6",
+        "jsx": "react",
+        "allowJs": true
     },
     "include": [
         "src/**/*"

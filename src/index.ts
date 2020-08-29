@@ -2,13 +2,10 @@ const logger = require('winston')
 const Discord = require('discord.io')
 const auth = require('../auth.json')
 
-
 import { Player } from './Player'
 import { MonsterDB } from './MonsterDB'
 
-// LODASH
-const _ = require('lodash/core')
-
+import * as _ from 'lodash';
 
 // get command line arguments
 const myArgs = process.argv.slice(2);
@@ -20,7 +17,7 @@ logger.add(new logger.transports.Console, {
     colorize: true
 });
 
-logger.level = 'debug';
+logger.level = 'debug'
 
 function log(text: string): void {
     logger.info(text)
