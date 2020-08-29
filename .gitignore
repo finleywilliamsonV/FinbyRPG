@@ -4,3 +4,4 @@ deployable
 *.js
 *.js.map
 package-lock.json
+!webpack.config.js

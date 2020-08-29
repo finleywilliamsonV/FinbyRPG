@@ -4,7 +4,7 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        // "outFile": "./deployable/build.js",
+        "outDir": "./dist/",
         "sourceMap": true,
         "target": "ESNext"        
     },
