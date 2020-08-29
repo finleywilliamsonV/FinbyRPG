@@ -5,7 +5,7 @@
     "main": "lemonMan.js",
     "author": "Finby",
     "scripts": {
-        "start": "node ./src/index.js"
+        "start": "node ./dist/index.js"
     },
     "dependencies": {
         "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
