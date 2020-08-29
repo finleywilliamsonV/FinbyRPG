@@ -4,8 +4,16 @@
     "description": "My First RPG Bot",
     "main": "lemonMan.js",
     "author": "Finby",
+    "scripts": {
+        "start": "node --experimental-modules bot.js"
+    },
     "dependencies": {
         "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+        "lodash": "^4.17.20",
+        "nvm": "0.0.4",
         "winston": "^3.3.3"
+    },
+    "devDependencies": {
+        "typescript": "^4.0.2"
     }
 }
