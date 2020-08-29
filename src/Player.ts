@@ -1,27 +1,27 @@
 
-class Player {
+export class Player {
 
-    _user
-    _userID
-    _level
-    _health
-    _gold
-    _exp
+    private _user: string
+    private _userID: string
+    private _level: number
+    private _health: number
+    private _gold: number
+    private _exp: number
 
-    constructor(user, userID) {
-        this.user = user
-        this.userID = userID
-        this.level = 1
-        this.health = 100
-        this.gold = 0
-        this.exp = 0
+    constructor(user: string, userID: string) {
+        this._user = user
+        this._userID = userID
+        this._level = 1
+        this._health = 100
+        this._gold = 0
+        this._exp = 0
     }
 
-    getExpUntilNextLevel() {
+    getExpUntilNextLevel(): number {
         return Math.pow(2, this.level) * 25
     }
 
-    dead() {
+    isDead(): boolean {
         return this.health <= 0
     }
 
@@ -72,5 +72,3 @@ class Player {
         }
     }
 }
-
-module.exports = Player
