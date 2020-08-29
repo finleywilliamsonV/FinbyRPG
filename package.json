@@ -1,0 +1,11 @@
+{
+    "name": "lemon-man",
+    "version": "1.0.0",
+    "description": "My First RPG Bot",
+    "main": "lemonMan.js",
+    "author": "Finby",
+    "dependencies": {
+        "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+        "winston": "^3.3.3"
+    }
+}
