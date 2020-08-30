@@ -5,3 +5,4 @@ deployable
 *.js.map
 package-lock.json
 !webpack.config.js
+dist/*
