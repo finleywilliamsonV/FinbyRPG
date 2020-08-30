@@ -1,6 +1,29 @@
 const logger = require('winston')
 
-export class Logger {
+export type MasterLogger = {
+    log: (text: string) => void
+}
+
+export const ML: MasterLogger = ((): MasterLogger => {
+
+    let logger: Logger
+
+    const initLogger = (): void => {
+        logger = new Logger()
+    }
+
+    return {
+
+        log(text: string): void {
+            if (!logger) {
+                initLogger()
+            }
+            logger.log(text)
+        }
+     }
+})()
+
+class Logger {
 
     constructor() {
         // get command line arguments
