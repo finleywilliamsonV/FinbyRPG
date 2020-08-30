@@ -1,5 +1,5 @@
-import { MonsterDB } from './../MonsterDB';
-import { Player } from './../Player';
+import { MonsterDB } from '../db/MonsterDB';
+import { Player } from '../GamePieces/Player';
 import { Logger } from './Logger';
 const Discord = require('discord.io')
 
@@ -29,12 +29,6 @@ export class DiscordBot {
 
         // Set Bot Listeners
         this.setBotListeners()
-
-        // Initialize player database
-        this.playerDB = []
-
-        // Initialize Monster Database
-        this.monsterDB = new MonsterDB();
     }
 
     private setBotListeners = (): void => {
