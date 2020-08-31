@@ -6,3 +6,4 @@ deployable
 package-lock.json
 !webpack.config.js
 dist/*
+!.eslintrc.js
