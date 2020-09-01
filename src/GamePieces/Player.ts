@@ -1,3 +1,4 @@
+import { ML } from './../utility/MasterLogger'
 
 export class Player {
 
@@ -17,58 +18,62 @@ export class Player {
         this._exp = 0
     }
 
-    getExpUntilNextLevel(): number {
+    public getExpUntilNextLevel(): number {
         return Math.pow(2, this.level) * 25
     }
 
-    isDead(): boolean {
+    public isDead(): boolean {
         return this.health <= 0
     }
 
+    public earnExperience(exp: number): void {
+        const expUntilNextLevel = this.getExpUntilNextLevel()
+        this._exp += exp
+        if (this._exp >= expUntilNextLevel) {
+            this._level ++
+            this._exp = this._exp - expUntilNextLevel
+            ML.log('YOU LEVELED UP! NOW LEVEL ' + this._level)
+        }
+    }
 
+    public earnGold(gold: number): void {
+        this._gold += gold
+    }
 
+    public heal(): void {
+        this._health = 100
+    }
 
-    // GETTERS AND SETTERS
-    get user() {
+    public takeDamage(damage: number): void {
+        this._health -= damage
+        if (this._health <= 0) {
+            this._health = 0
+            ML.log('YOU DIED')
+
+            if (this._level > 1) {
+                this._level --
+                ML.log('YOU LOST A LEVEL')
+            }
+        }
+    }
+
+    // GETTERS
+    public get user(): string {
         return this._user
     }
-    set user(value) {
-        this._user = value
-    }
-    get userID() {
+    public get userID(): string {
         return this._userID
     }
-    set userID(value) {
-        this._userID = value
-    }
-    get level() {
+    public get level(): number {
         return this._level
     }
-    set level(value) {
-        this._level = value
-    }
-    get health() {
+    public get health(): number {
         return this._health
     }
-    set health(value) {
-        this._health = value
-    }
-    get gold() {
+    public get gold(): number {
         return this._gold
     }
-    set gold(value) {
-        this._gold = value
-    }
-    get exp() {
+    public get exp(): number {
         return this._exp
-    }
-    set exp(value) {
-        const expUntilNextLevel = this.getExpUntilNextLevel()
-        if (value > expUntilNextLevel) {
-            this.level ++
-            this._exp = value - expUntilNextLevel
-        } else {
-            this._exp = value
-        }
     }
 }

@@ -31,6 +31,12 @@ export class MonsterDB {
             'exp': 32,
             'minDamage': 20,
             'maxDamage': 30
+        },
+        {
+            'name': 'a bad fart',
+            'exp': 12,
+            'minDamage': 1,
+            'maxDamage': 2
         }
     ]
 

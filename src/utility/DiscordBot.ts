@@ -1,11 +1,17 @@
+import { Player } from './../GamePieces/Player'
 import { ML } from './MasterLogger'
 import { MonsterDB } from '../db/MonsterDB'
-import { Player } from '../GamePieces/Player'
+
 import Discord = require('discord.io')
+import _ = require('lodash');
 
 export type AuthJSON = {
     token: string
 }
+
+export const TRIGGER: string = 'rpg'
+const TIME_BETWEEN_BOT_MESSAGES_MS: number = 1000
+const BOT_OVERLOAD_MESSAGE: string = 'Please wait at least 1s between sending messages'
 
 /**
  * Class DiscordBot
@@ -50,53 +56,23 @@ export class DiscordBot {
         })
 
         this.bot.on('message', (user: string, userID: string, channelID: string, message: string): void => {
-            // ML.log('// MESSAGE RECEIVED //')
 
-            const botSpeak = (message: string): void => {
-                this.bot.sendMessage({
-                    to: channelID,
-                    message: message
-                })
-            }
-
-            const TRIGGER: string = 'rpg'
+            // setup metered speak function
+            const botSpeak = this.setupMeteredBotSpeak(channelID)
 
             if (message.substring(0, TRIGGER.length) == TRIGGER) {
-                // ML.log('Message:' + message)
-                // ML.log('user:' + user)
-                // ML.log('userID:' + userID)
 
                 let args = message.substring(TRIGGER.length + 1).split(' ')
                 const cmd = args[0]
 
-                // ML.log('args:' + args)
-
                 args = args.splice(1)
-                // ML.log('cmd:' + cmd)
 
-                let player
-
-                // ML.log('this.playerDB:' + this.playerDB)
-
-                for (let i = 0; i < this.playerDB.length; i++) {
-                    const currentPlayer = this.playerDB[i]
-                    // ML.log('currentPlayer: ' + currentPlayer)
-                    if (currentPlayer.userID == userID) {
-                        player = currentPlayer
-                        break
-                    }
-                }
-
-                // ML.log('player: ' + player)
+                let player: Player = _.find((p: Player) => p.userID == userID)
 
                 // check for user
                 if (!player) {
-                    // ML.log('Adding Player: ' + user + ' - ' + userID)
                     player = new Player(user, userID)
                     this.playerDB.push(player)
-                    // ML.log(this.playerDB.toString())
-                } else {
-                    // ML.log(`Found Player: ${player.user} - ${player.userID}`)
                 }
 
 
@@ -107,15 +83,14 @@ export class DiscordBot {
 
                         const damage = this.monsterDB.calculateAttack(monster)
 
-                        player.health -= damage
+                        player.takeDamage(damage)
 
                         if (player.isDead()) {
                             botSpeak(`**${player.user}** fought ${monster.name} and Lost... F\n- Suffered ${damage} damage`)
                         } else {
                             const gold = this.monsterDB.calculateGold(monster)
-                            ML.log('gold: ' + gold)
-                            player.gold += gold
-                            player.exp += monster.exp
+                            player.earnGold(gold)
+                            player.earnExperience(monster.exp)
                             botSpeak(`**${player.user}** fought ${monster.name} and won!\n- Suffered ${damage} damage\n- Gained ${gold} gold\n- Earned ${monster.exp} experience points\n- ${player.health} health remaining`)
                         }
                         break
@@ -128,12 +103,32 @@ export class DiscordBot {
 
                     case 'heal': {
                         botSpeak('Your health has been restored to 100')
-                        player.health = 100
+                        player.heal()
                         break
                     }
                 }
             }
         })
     }
+
+    /**
+     * Returns a function that limits bot messages to 1/second
+     * @param channelID 
+     */
+    private setupMeteredBotSpeak = (channelID: string) : (message: string) => void => {
+        let timeOfLastMessage: number
+        return (message: string): void => {
+            if (!timeOfLastMessage) {
+                timeOfLastMessage = Date.now()
+            } else if (Date.now() - timeOfLastMessage < TIME_BETWEEN_BOT_MESSAGES_MS) { // too quick
+                message = BOT_OVERLOAD_MESSAGE
+            }
+            this.bot.sendMessage({
+                to: channelID,
+                message: message
+            })
+            timeOfLastMessage = Date.now()
+        }
+    } 
 }
 

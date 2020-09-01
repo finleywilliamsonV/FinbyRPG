@@ -26,10 +26,6 @@ export const ML: MasterLogger = ((): MasterLogger => {
 })()
 
 class Logger {
-
-    private timeBeforeNextMessage: number = 0
-    private messageAllowed: boolean = true
-    private messageQueue: string[] = []
     
     constructor() {
 
@@ -39,16 +35,17 @@ class Logger {
 
         // Configure logger settings
         logger.remove(logger.transports.Console)
-        // logger.add(new logger.transports.Console, {
-        //     colorize: true
-        // })
         
         logger.add(new logger.transports.Console)
 
         logger.level = 'debug'
     }
 
-    public log(text: string): void {
-        logger.info(text)
+    public log(message: string): void {
+        console.log(message)
+    }
+
+    public info(message: string): void {
+        logger.info(message)
     }
 }
