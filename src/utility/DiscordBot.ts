@@ -46,14 +46,6 @@ export class DiscordBot {
      */
     private setBotListeners = (): void => {
 
-        const botMessageQueue: TimerQueue = new TimerQueue(1000, (channelID: string, message: string): void => {
-            ML.log(`bot message: ${message}`)
-            this.bot.sendMessage({
-                to: channelID,
-                message: message
-            })
-        })
-
         this.bot.on('ready', () => {
             ML.log('Connected')
             ML.log(`${this.bot.username} - (${this.bot.id})`)
@@ -63,7 +55,10 @@ export class DiscordBot {
             // ML.log('// MESSAGE RECEIVED //')
 
             const botSpeak = (message: string): void => {
-                botMessageQueue.queue(channelID, message)
+                this.bot.sendMessage({
+                    to: channelID,
+                    message: message
+                })
             }
 
             const TRIGGER: string = 'rpg'

@@ -1,3 +1,4 @@
+import { TimerQueue } from './TimerQueue'
 import logger = require('winston')
 
 export type MasterLogger = {
@@ -7,18 +8,19 @@ export type MasterLogger = {
 export const ML: MasterLogger = ((): MasterLogger => {
 
     let logger: Logger
+    let logQueue: TimerQueue
 
     const initLogger = (): void => {
         logger = new Logger()
+        logQueue = new TimerQueue(250, (message: string): void => logger.log(message))
     }
 
     return {
-
-        log(text: string): void {
+        log(message: string): void {
             if (!logger) {
                 initLogger()
             }
-            logger.log(text)
+            logQueue.queue(message)
         }
      }
 })()
