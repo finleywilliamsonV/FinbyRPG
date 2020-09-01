@@ -1,6 +1,4 @@
-import { TimerQueue } from './TimerQueue'
-
-import { ML } from './Logger'
+import { ML } from './MasterLogger'
 import { MonsterDB } from '../db/MonsterDB'
 import { Player } from '../GamePieces/Player'
 import Discord = require('discord.io')

@@ -1,4 +1,4 @@
-import { ML } from './Logger'
+import { ML } from './MasterLogger'
 export class TimerQueue {
 
     private callAllowed: boolean = true
