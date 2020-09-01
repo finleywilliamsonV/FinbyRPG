@@ -36,15 +36,15 @@ export class MonsterDB {
 
     constructor() {}
 
-    getMonster() {
+    public getMonster(): Monster {
         return this._db[Math.floor(Math.random() * this._db.length)]
     }
 
-    calculateAttack(monster: Monster) {
+    public calculateAttack(monster: Monster): number {
         return monster.minDamage + Math.floor(Math.random() * (monster.maxDamage - monster.minDamage))
     }
 
-    calculateGold(monster: Monster) {
+    public calculateGold(monster: Monster): number {
         return Math.floor(Math.random() * monster.maxDamage)
     }
 }

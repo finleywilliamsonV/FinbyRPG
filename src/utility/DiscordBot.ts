@@ -1,3 +1,4 @@
+import { TimerQueue } from './TimerQueue'
 
 import { ML } from './Logger'
 import { MonsterDB } from '../db/MonsterDB'
@@ -24,6 +25,12 @@ export class DiscordBot {
      */
     constructor() {
 
+        // Initialize the PlayerDB
+        this.playerDB = []
+
+        // Initialize the MonsterDB
+        this.monsterDB = new MonsterDB()
+
         // Initialize Discord Bot
         this.bot = new Discord.Client({
             token: this.auth.token,
@@ -38,70 +45,77 @@ export class DiscordBot {
      * Sets the listeners for the bot
      */
     private setBotListeners = (): void => {
-        this.bot.on('ready', () => {
-            ML.log('Connected')
-            ML.log('Logged in as: ')
-            ML.log(this.bot.username + ' - (' + this.bot.id + ')')
+
+        const botMessageQueue: TimerQueue = new TimerQueue(1000, (channelID: string, message: string): void => {
+            ML.log(`bot message: ${message}`)
+            this.bot.sendMessage({
+                to: channelID,
+                message: message
+            })
         })
 
-        this.bot.on('message', (user: string, userID: string, channelID: string, message: string,  ): void => {
-            ML.log('// MESSAGE RECEIVED //')
-        
-            const TRIGGER: string = 'rpg'
+        this.bot.on('ready', () => {
+            ML.log('Connected')
+            ML.log(`${this.bot.username} - (${this.bot.id})`)
+        })
+
+        this.bot.on('message', (user: string, userID: string, channelID: string, message: string): void => {
+            // ML.log('// MESSAGE RECEIVED //')
 
             const botSpeak = (message: string): void => {
-                this.bot.sendMessage({
-                    to: channelID,
-                    message: message
-                })
+                botMessageQueue.queue(channelID, message)
             }
-            
+
+            const TRIGGER: string = 'rpg'
+
             if (message.substring(0, TRIGGER.length) == TRIGGER) {
-                ML.log('Message:' + message)
-                ML.log('user:' + user)
-                ML.log('userID:' + userID)
-        
+                // ML.log('Message:' + message)
+                // ML.log('user:' + user)
+                // ML.log('userID:' + userID)
+
                 let args = message.substring(TRIGGER.length + 1).split(' ')
                 const cmd = args[0]
-                
-                ML.log('args:' + args)
-                
+
+                // ML.log('args:' + args)
+
                 args = args.splice(1)
-                ML.log('cmd:' + cmd)
-        
+                // ML.log('cmd:' + cmd)
+
                 let player
-        
+
+                // ML.log('this.playerDB:' + this.playerDB)
+
                 for (let i = 0; i < this.playerDB.length; i++) {
                     const currentPlayer = this.playerDB[i]
-                    ML.log('currentPlayer: ' + currentPlayer)
+                    // ML.log('currentPlayer: ' + currentPlayer)
                     if (currentPlayer.userID == userID) {
                         player = currentPlayer
                         break
                     }
                 }
-        
-                ML.log('player: ' + player)
-        
+
+                // ML.log('player: ' + player)
+
                 // check for user
                 if (!player) {
-                    ML.log('Adding Player: ' + user + ' - ' + userID)
+                    // ML.log('Adding Player: ' + user + ' - ' + userID)
                     player = new Player(user, userID)
                     this.playerDB.push(player)
-                    ML.log(this.playerDB.toString())
+                    // ML.log(this.playerDB.toString())
                 } else {
-                    ML.log(`Found Player: ${player.user} - ${player.userID}`)
+                    // ML.log(`Found Player: ${player.user} - ${player.userID}`)
                 }
-        
-        
+
+
                 switch (cmd) {
                     // !ping
                     case 'hunt': {
                         const monster = this.monsterDB.getMonster()
-        
+
                         const damage = this.monsterDB.calculateAttack(monster)
-        
+
                         player.health -= damage
-        
+
                         if (player.isDead()) {
                             botSpeak(`**${player.user}** fought ${monster.name} and Lost... F\n- Suffered ${damage} damage`)
                         } else {
